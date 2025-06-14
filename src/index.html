@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/public/images/guitar-pick.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Song Info Hub</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&family=Poppins:wght@400;700&family=Roboto:wght@400;700&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <h1>Song Info Hub</h1>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for a song or artist...">
+        <button id="searchButton">Search</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content container">
+    <section class="chords-section">
+      <h2>Chords/Tabs</h2>
+      <div id="chordsDisplay" class="content-box">
+        <p>Search for a song to view its chords.</p>
+      </div>
+    </section>
+
+    <section class="lyrics-section">
+      <h2>Lyrics</h2>
+      <div id="lyricsDisplay" class="content-box">
+        <p>Search for a song to view its lyrics.</p>
+      </div>
+    </section>
+
+    <section class="artist-section">
+      <h2>Artist Information</h2>
+      <div id="artistInfoDisplay" class="content-box">
+        <p>Search for an artist to view their information.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Song Info Hub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+
+</html>
