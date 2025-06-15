@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <link rel="icon" type="image/png" href="/public/images/guitar-pick.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Song Info Hub</title>
+  <title>About Music | Song Info Hub</title>
   <link rel="stylesheet" href="./css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,21 +18,25 @@
   <header class="header">
     <div class="container">
       <h1>Song Info Hub</h1>
-      <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search for a song or artist...">
-        <button id="searchButton">Search</button>
+      <nav class="main-nav">
+        <a href="chords/index.html">Go to Chords & Scales Lookup</a>
+      </nav>
+
+      <div class="search-section">
+        <input type="text" id="artistInput" placeholder="Enter Artist Name" class="search-input">
+        <input type="text" id="songInput" placeholder="Enter Song Title (optional for artist info)"
+          class="search-input">
+        <button id="searchButton" class="search-button">Search</button>
+      </div>
+
+      <div id="chordsDisplay" class="content-box">
+        <p>Full song chords/tabs for specific songs are not available via this API. Please use the dedicated "Chords &
+          Scales Lookup" page for individual chord and scale shapes.</p>
       </div>
     </div>
   </header>
 
   <main class="main-content container">
-    <section class="chords-section">
-      <h2>Chords/Tabs</h2>
-      <div id="chordsDisplay" class="content-box">
-        <p>Search for a song to view its chords.</p>
-      </div>
-    </section>
-
     <section class="lyrics-section">
       <h2>Lyrics</h2>
       <div id="lyricsDisplay" class="content-box">
@@ -50,7 +54,7 @@
 
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2025 Song Info Hub. All rights reserved.</p>
+      <p>&copy; 2025 About Music. All rights reserved.</p>
     </div>
   </footer>
 

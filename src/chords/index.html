@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Music | Chords & Scales Lookup</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&family=Poppins:wght@400;700&family=Roboto:wght@400;700&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>Chords & Scales Lookup</h1>
+            <nav class="main-nav">
+                <a href="../index.html">Back to Song Info Hub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content container">
+        <section class="chord-lookup-section">
+            <h2>Find Individual Chord/Scale Shapes</h2>
+            <div class="search-bar">
+                <input type="text" id="chordInput" placeholder="e.g., Cmaj, G7, C major scale" class="search-input" />
+                <button id="lookupButton" class="search-button">Lookup Chord/Scale</button>
+            </div>
+
+            <div id="chordResults" class="content-box">
+                <p>Enter a chord name (e.g., Cmaj, G7, Amin) or a scale (e.g., C major scale, G minor pentatonic) to see
+                    its diagram.</p>
+                <p>Remember to try variations like `Cmaj7`, `Dm7b5`, `A#dim`, `Bb minor pentatonic`.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 About Music. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
+            const chordInput = document.getElementById('chordInput');
+            const lookupButton = document.getElementById('lookupButton');
+            const chordResults = document.getElementById('chordResults');
+
+            lookupButton.addEventListener('click', () => {
+                const query = chordInput.value.trim();
+                if (!query) {
+                    chordResults.innerHTML = '<p class="error-message">Please enter a chord or scale name.</p>';
+                    return;
+                }
+
+                // Update message while preparing to open new tab
+                chordResults.innerHTML = '<p>Opening diagram for ' + query + ' in a new tab...</p>';
+
+                // Construct the URL for the Scales-Chords.com lookup page
+                const encodedQuery = encodeURIComponent(query);
+
+                let targetUrl = '';
+                // Simple heuristic to guess if it's a scale or chord
+                if (query.toLowerCase().includes('scale')) {
+                    // Replace spaces with underscores for scale URLs, as per Scales-Chords.com convention
+                    const scaleQueryFormatted = query.toLowerCase().replace(/ /g, '_');
+                    targetUrl = `https://www.scales-chords.com/scale/${encodeURIComponent(scaleQueryFormatted)}.php`;
+                } else {
+                    targetUrl = `https://www.scales-chords.com/chord/${encodedQuery}.php`;
+                }
+
+                // Open the URL in a new tab
+                window.open(targetUrl, '_blank');
+
+                // You might want to revert the message after a short delay
+                setTimeout(() => {
+                    chordResults.innerHTML = '<p>Diagram opened in a new tab. Enter another chord or scale.</p>';
+                }, 2000); // Revert message after 2 seconds
+            });
+        });
+    </script>
+</body>
+
+</html>

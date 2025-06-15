@@ -38,10 +38,11 @@ h6 {
 }
 
 .container {
-  max-width: 1200px;
+  width: 90%;
+  max-width: 1400px;
+  /* INCREASED MAX-WIDTH for more horizontal space */
   margin: 0 auto;
-  padding: 1rem;
-  width: 100%;
+  padding: 20px 0;
 }
 
 /* Header Styles */
@@ -58,11 +59,43 @@ h6 {
   margin-bottom: 1rem;
 }
 
+.main-nav a {
+  color: #fff;
+  /* White color for links on the blue header background */
+  text-decoration: none;
+  /* Remove underline */
+  font-weight: 700;
+  padding: 8px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  /* Subtle border */
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  display: inline-block;
+  /* Allows padding and margin to work correctly */
+  margin-bottom: 15px;
+  /* Space below the nav link */
+}
+
+.main-nav a:hover,
+.main-nav a:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+  /* Slight background on hover */
+  border-color: #fff;
+  /* Solid border on hover */
+}
+
 .search-bar {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  align-items: center;
+  gap: 15px;
+  /* Increased gap slightly for better spacing */
+  width: 100%;
+  /* Ensure search-bar takes full width of its parent */
+  max-width: 600px;
+  /* Limit the max width of the search bar content for aesthetics */
+  flex-wrap: wrap;
+  margin-bottom: 25px;
 }
 
 #searchInput {
@@ -93,16 +126,104 @@ h6 {
   /* Slightly darker yellow */
 }
 
+.search-section {
+  display: flex;
+  flex-direction: column;
+  /* Stack children vertically */
+  align-items: center;
+  /* Center horizontally */
+  gap: 15px;
+  /* Added gap between title, search-bar, and content-box */
+  margin-bottom: 20px;
+}
+
+.search-input {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 5px;
+  /* Removed fixed width, using flex-grow and max-width for responsiveness */
+  flex-grow: 1;
+  /* Allows input to take up available space */
+  max-width: 100%;
+  /* Ensure it doesn't overflow */
+  min-width: 250px;
+  /* Ensure it's not too small on smaller screens */
+  font-size: 1.05rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.search-button {
+  background-color: #303F9F;
+  color: #fff;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.05rem;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.search-button:hover {
+  /* Darker shade for hover effect */
+  background-color: #1A237E;
+  /* Even deeper Indigo Blue */
+}
+
 /* Main Content Layout (Desktop - Three Columns) */
 .main-content {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  /* Three equal columns */
-  gap: 2rem;
-  /* Space between columns */
-  padding: 2rem 1rem;
-  flex-grow: 1;
-  /* Allows main content to expand */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* Center the content boxes if they don't fill the width */
+  gap: 25px;
+  /* Space between the content boxes */
+  /
+}
+
+.lyrics-section,
+.artist-section {
+  flex: 1;
+  /* Allow these sections to grow and shrink */
+  min-width: 300px;
+  /* Minimum width for responsiveness */
+  max-width: 45%;
+  /* Max width to allow two columns on larger screens */
+  margin-bottom: 25px;
+  /* Add margin to match content-box padding */
+}
+
+.chord-lookup-section {
+  width: 100%;
+  /* Make this section take full width of its parent (.container) */
+  max-width: 900px;
+  /* Set a generous max-width for the section itself */
+  margin-bottom: 30px;
+  padding: 25px;
+  /* Add padding similar to .content-box for consistency */
+  box-sizing: border-box;
+  /* Include padding in the width calculation */
+  background-color: #fff;
+  /* Match content-box background */
+  border-radius: 8px;
+  /* Match content-box border-radius */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  /* Match content-box shadow */
+
+  display: flex;
+  /* Use flexbox to organize content within the section */
+  flex-direction: column;
+  align-items: center;
+  /* Center the content horizontally */
+}
+
+.chord-lookup-section h2 {
+  width: 100%;
+  /* Ensure heading takes full width within the section */
+  text-align: center;
+  margin-bottom: 25px;
+  color: #222;
 }
 
 section {
@@ -113,16 +234,37 @@ section {
 }
 
 .content-box {
-  min-height: 150px;
-  /* Minimum height for content areas */
-  padding: 1rem;
-  background-color: var(--neutral-light-gray);
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  overflow-y: auto;
-  /* Allow scrolling if content overflows */
-  max-height: 400px;
-  /* Max height for content boxes, adjust as needed */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  margin-bottom: 25px;
+  line-height: 1.6;
+  width: 100%;
+  /* Ensure content box takes full width of its parent (container/section) */
+  box-sizing: border-box;
+}
+
+.content-box p {
+  color: #333;
+  /* Darker text for readability on a light background */
+  margin: 0;
+  /* Remove default paragraph margins */
+}
+
+.content-box h2,
+.content-box h3,
+.content-box h4 {
+  color: #222;
+  /* Even darker for headings */
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.error-message {
+  color: #d32f2f;
+  /* Red color for error messages */
+  font-weight: 700;
 }
 
 /* Footer Styles */
@@ -134,6 +276,13 @@ section {
   margin-top: auto;
   /* Pushes footer to the bottom */
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#chordResults iframe {
+  display: block;
+  /* Ensure it takes full width and behaves as a block */
+  margin: 0 auto;
+  /* Center the iframe if its content doesn't fill 100% */
 }
 
 /* Responsive Design for Mobile (Vertical Layout) */
