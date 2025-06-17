@@ -17,47 +17,56 @@
 <body>
   <header class="header">
     <div class="container">
-      <h1>Song Info Hub</h1>
+      <h1>About Music | Song Info Hub</h1>
       <nav class="main-nav">
-        <a href="chords/index.html">Go to Chords & Scales Lookup</a>
+        <a href="./chords/index.html">Go to Chords Lookup</a>
       </nav>
-
-      <div class="search-section">
-        <input type="text" id="artistInput" placeholder="Enter Artist Name" class="search-input">
-        <input type="text" id="songInput" placeholder="Enter Song Title (optional for artist info)"
-          class="search-input">
-        <button id="searchButton" class="search-button">Search</button>
-      </div>
-
-      <div id="chordsDisplay" class="content-box">
-        <p>Full song chords/tabs for specific songs are not available via this API. Please use the dedicated "Chords &
-          Scales Lookup" page for individual chord and scale shapes.</p>
-      </div>
     </div>
   </header>
 
   <main class="main-content container">
-    <section class="lyrics-section">
-      <h2>Lyrics</h2>
-      <div id="lyricsDisplay" class="content-box">
-        <p>Search for a song to view its lyrics.</p>
+    <section class="main-search-section">
+      <div class="search-bar">
+        <input type="text" id="artistInput" placeholder="Enter Artist Name" class="search-input">
+        <input type="text" id="songInput" placeholder="Enter Song Title (optional for lyrics)" class="search-input">
+        <button id="searchButton">Search</button>
+      </div>
+      <div id="searchMessage" class="search-message"></div>
+    </section>
+
+    <div class="info-results-wrapper">
+      <section class="artist-section">
+        <h2>Artist Information</h2>
+        <div id="artistInfoDisplay" class="content-box">
+          <p>Enter an artist name to display artist information here.</p>
+        </div>
+      </section>
+
+      <section class="lyrics-section">
+        <h2>Lyrics</h2>
+        <div id="lyricsDisplay" class="content-box">
+          <p>Enter an artist name and song title to get lyrics.</p>
+        </div>
+      </section>
+    </div>
+    <section class="chords-tabs-section">
+      <h2>Chords/Tabs</h2>
+      <div class="content-box">
+        <p>For individual chord diagrams (e.g., Cmaj, G7) please use the dedicated lookup tool.</p>
+        <a href="./chords/index.html" class="button-link">Go to Chord Lookup Tool</a>
       </div>
     </section>
 
-    <section class="artist-section">
-      <h2>Artist Information</h2>
-      <div id="artistInfoDisplay" class="content-box">
-        <p>Search for an artist to view their information.</p>
+    <section class="recent-searches-section">
+      <h2>Recent Searches</h2>
+      <div id="recentSearchesDisplay" class="content-box">
+        <p>No recent searches yet.</p>
       </div>
     </section>
+
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <p>&copy; 2025 About Music. All rights reserved.</p>
-    </div>
-  </footer>
-
+  <footer id="main-footer"></footer>
   <script type="module" src="./js/main.js"></script>
 </body>
 
