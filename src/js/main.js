@@ -1,70 +1,116 @@
-import { fetchData } from './utils.mjs';
+
+import { loadPartial } from './utils.mjs';
 import { getArtistInfo } from './lastfm.js';
 import { getLyrics } from './lyrics.js';
-//import { getChordOrScale } from './chords.js'; 
+
+const MAX_RECENT_SEARCHES = 5;
+const RECENT_SEARCHES_KEY = 'recentSearches';
 
 console.log('main.js loaded!');
 
+// Get DOM elements
 const artistInput = document.getElementById('artistInput');
 const songInput = document.getElementById('songInput');
 const searchButton = document.getElementById('searchButton');
-const chordsDisplay = document.getElementById('chordsDisplay'); 
 const lyricsDisplay = document.getElementById('lyricsDisplay');
 const artistInfoDisplay = document.getElementById('artistInfoDisplay');
-
-
-//const chordScaleInput = document.getElementById('chordScaleInput');
-// const chordScaleButton = document.getElementById('chordScaleButton');
-// const chordScaleResults = document.getElementById('chordScaleResults');
+const searchMessage = document.getElementById('searchMessage');
+const recentSearchesDisplay = document.getElementById('recentSearchesDisplay');
 
 console.log('VITE_LASTFM_API_KEY from .env:', import.meta.env.VITE_LASTFM_API_KEY);
-// Removed duplicate 'main.js loaded!' log here
+
+function saveSearch(artist, song) {
+    let searches = JSON.parse(localStorage.getItem(RECENT_SEARCHES_KEY)) || [];
+
+    // Create a unique identifier for the search
+    const newSearch = { artist: artist, song: song };
+    const searchString = `${artist}-${song}`; // Simple string for comparison
+
+    // Remove duplicates (if the exact search already exists, move it to top)
+    searches = searches.filter(s => `${s.artist}-${s.song}` !== searchString);
+
+    // Add new search to the beginning
+    searches.unshift(newSearch);
+
+    // Trim to max number of searches
+    if (searches.length > MAX_RECENT_SEARCHES) {
+        searches = searches.slice(0, MAX_RECENT_SEARCHES);
+    }
+
+    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(searches));
+    renderRecentSearches(); // Re-render after saving
+}
+
+function renderRecentSearches() {
+    let searches = JSON.parse(localStorage.getItem(RECENT_SEARCHES_KEY)) || [];
+    if (recentSearchesDisplay) {
+        if (searches.length === 0) {
+            recentSearchesDisplay.innerHTML = '<p>No recent searches yet.</p>';
+            return;
+        }
+
+        const ul = document.createElement('ul');
+        ul.className = 'recent-searches-list';
+        searches.forEach(search => {
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="#" data-artist="${search.artist}" data-song="${search.song}">${search.artist}${search.song ? ' - ' + search.song : ''}</a>`;
+            li.addEventListener('click', (e) => {
+                e.preventDefault();
+                artistInput.value = search.artist;
+                songInput.value = search.song;
+                searchButton.click(); // Programmatically click the search button
+            });
+            ul.appendChild(li);
+        });
+        recentSearchesDisplay.innerHTML = ''; // Clear previous
+        recentSearchesDisplay.appendChild(ul);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadPartial('#main-footer', '/partials/footer.html');
+    renderRecentSearches();
+});
 
 // --- Event Listener for Main Artist/Song Search ---
 searchButton.addEventListener('click', async () => {
     const artistQuery = artistInput.value.trim();
     const songQuery = songInput.value.trim();
 
+
+    lyricsDisplay.innerHTML = '<p>Enter an artist name and song title to get lyrics.</p>';
+    artistInfoDisplay.innerHTML = '<p>Enter an artist name to display artist information here.</p>';
+    searchMessage.innerHTML = '';
+
     // Input Validation
     if (!artistQuery && !songQuery) {
-        alert('Please enter an Artist Name or a Song Title to search.');
+        searchMessage.innerHTML = '<p class="error-message">Please enter an Artist Name and/or a Song Title to search.</p>';
         return;
     }
 
+    searchMessage.innerHTML = '<p>Searching...</p>'; // Show general loading message
     console.log(`Searching for Artist: "${artistQuery}", Song: "${songQuery}"`);
 
-    // --- Initial Display Placeholders / Loading Messages ---
-    // Note: The `chordsDisplay` here refers to the main section,
-    // not the specific chordScaleResults for individual lookups.
-    artistInfoDisplay.innerHTML = `<p>Searching artist info for "${artistQuery || '...'}"...</p>`;
-    // CORRECTED: Removed math-inline span tags, fixed interpolation syntax
-    lyricsDisplay.innerHTML = `<p>Searching lyrics for "${songQuery || '...'}" by "${artistQuery || '...'}"...</p>`;
-    chordsDisplay.innerHTML = `<p>Searching song chords for "${songQuery || '...'}" by "${artistQuery || '...'}" (Not supported by API directly)...</p>`;
-
-
-    // --- Fetch Artist Information (using Last.fm API) ---
-    // This block is the correct one. The duplicate was removed.
-    if (artistQuery) {
-        try {
-            const artistData = await getArtistInfo(artistQuery);
-            artistInfoDisplay.innerHTML = `<h3>Artist: ${artistData.name}</h3><p>${artistData.bio}</p>`;
-        } catch (error) {
-            artistInfoDisplay.innerHTML = `<p class="error-message">Error fetching artist info: ${error.message}</p>`;
-            console.error('Error in main.js fetching artist info:', error);
-        }
-    } else {
-        artistInfoDisplay.innerHTML = `<p>Enter an artist name to display artist information here.</p>`;
-    }
-
+    let lyricsFetched = false;
+    let artistInfoFetched = false;
 
     // --- Fetch Lyrics (using Lyrics.ovh API) ---
     if (artistQuery && songQuery) {
         try {
+            // CORRECTED: Use songQuery and artistQuery here
+            lyricsDisplay.innerHTML = `<p>Searching lyrics for "${songQuery}" by "${artistQuery}"...</p>`;
             const lyricsText = await getLyrics(artistQuery, songQuery);
-            lyricsDisplay.innerHTML = `<h4>Lyrics:</h4><pre>${lyricsText}</pre>`; // <pre> preserves formatting
+            if (lyricsText) {
+                // CORRECTED: Use songQuery and artistQuery here
+                lyricsDisplay.innerHTML = `<h4>Lyrics for "${songQuery}" by ${artistQuery}:</h4><pre>${lyricsText}</pre>`; // Ensure formatting with <pre>
+                lyricsFetched = true;
+            } else {
+                // CORRECTED: Use songQuery and artistQuery here
+                lyricsDisplay.innerHTML = `<p class="error-message">Lyrics for "${songQuery}" by ${artistQuery} not found.</p>`;
+            }
         } catch (error) {
-            lyricsDisplay.innerHTML = `<p class="error-message">Error fetching lyrics: ${error.message}</p>`;
-            console.error('Error in main.js fetching lyrics:', error);
+            console.error('Error fetching lyrics:', error);
+            lyricsDisplay.innerHTML = `<p class="error-message">Error fetching lyrics: ${error.message}. Please try again.</p>`;
         }
     } else if (!songQuery && artistQuery) {
         lyricsDisplay.innerHTML = `<p>Enter a song title in addition to "${artistQuery}" to get lyrics.</p>`;
@@ -74,47 +120,32 @@ searchButton.addEventListener('click', async () => {
         lyricsDisplay.innerHTML = `<p>Enter both an artist name and song title to get lyrics here.</p>`;
     }
 
-
-    // --- Display Message for Song Chords/Tabs (Not from API, but for context) ---
-    // This section correctly informs the user about the API's capabilities
-    if (artistQuery && songQuery) {
-        
-    } else if (!songQuery && artistQuery) {
-        chordsDisplay.innerHTML = `<p>Enter a song title to see message about full song chords. Use Chord/Scale Lookup for individual shapes.</p>`;
-    } else if (!artistQuery && songQuery) {
-        chordsDisplay.innerHTML = `<p>Enter an artist name to see message about full song chords. Use Chord/Scale Lookup for individual shapes.</p>`;
+    // --- Fetch Artist Information (using Last.fm API) ---
+    if (artistQuery) {
+        try {
+            artistInfoDisplay.innerHTML = `<p>Searching artist info for "${artistQuery}"...</p>`;
+            const artistData = await getArtistInfo(artistQuery);
+            if (artistData && artistData.name) { // Check if artistData and its name property exist
+                const bioText = artistData.bio || 'No biography available.'; // Provide a default if bio is empty
+                artistInfoDisplay.innerHTML = `<h3>Artist: ${artistData.name}</h3><p>${bioText}</p>`;
+                artistInfoFetched = true;
+            } else {
+                artistInfoDisplay.innerHTML = `<p class="error-message">Artist information for "${artistQuery}" not found.</p>`;
+            }
+        } catch (error) {
+            console.error('Error in main.js fetching artist info:', error);
+            artistInfoDisplay.innerHTML = `<p class="error-message">Error fetching artist info: ${error.message}</p>`;
+        }
     } else {
-        chordsDisplay.innerHTML = `<p>Enter both an artist name and song title to get information about full song chords (not available here directly). Use the Chord/Scale Lookup below for individual shapes.</p>`;
+        artistInfoDisplay.innerHTML = `<p>Enter an artist name to display artist information here.</p>`;
     }
 
+    // Final Search Message 
+    // This provides a summary message after both fetches (or attempts) are done.
+    if (lyricsFetched || artistInfoFetched) {
+        searchMessage.innerHTML = `<p>Search results for "${artistQuery}${songQuery ? ' - ' + songQuery : ''}".</p>`;
+    } else {
+        searchMessage.innerHTML = `<p class="error-message">No results found for "${artistQuery}${songQuery ? ' - ' + songQuery : ''}". Please try different terms.</p>`;
+    }
+    saveSearch(artistQuery, songQuery);
 });
-
-
-// chordScaleButton.addEventListener('click', async () => {
-//     const chordScaleQuery = chordScaleInput.value.trim();
-
-    
-//     chordScaleResults.innerHTML = '<p>Searching for chord or scale...</p>';
-
-//     if (!chordScaleQuery) {
-//         chordScaleResults.innerHTML = '<p>Please enter a chord or scale to lookup (e.g., C/major or C/pentatonic).</p>';
-//         return;
-//     }
-
-//     try {
-//         const chordScaleData = await getChordOrScale(chordScaleQuery);
-        
-//         if (chordScaleData && chordScaleData.image) { // Check if image property exists
-//             chordScaleResults.innerHTML = `<h4>${chordScaleQuery}</h4><img src="${chordScaleData.image}" alt="${chordScaleQuery}" style="max-width:100%;">`;
-//         } else if (chordScaleData && chordScaleData.text) { // Some results might just be text
-//             chordScaleResults.innerHTML = `<h4>${chordScaleQuery}</h4><pre>${chordScaleData.text}</pre>`;
-//         }
-//         else {
-//             chordScaleResults.innerHTML = `<p>No visual diagram or clear text found for "${chordScaleQuery}". Check console for raw data.</p>`;
-//             console.log('Raw Scales-Chords.com data:', chordScaleData);
-//         }
-//     } catch (error) {
-//         chordScaleResults.innerHTML = `<p class="error-message">Error fetching chord/scale: ${error.message}</p>`;
-//         console.error('Error fetching chord/scale:', error);
-//     }
-// });
