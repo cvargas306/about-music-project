@@ -1,6 +1,5 @@
-// vite.config.js
 import { defineConfig } from 'vite';
-import { resolve } from 'path'; // ADD THIS LINE
+import { resolve } from 'path';
 
 export default defineConfig({
   root: 'src',
@@ -8,10 +7,10 @@ export default defineConfig({
   build: {
     outDir: '../dist',
     emptyOutDir: true,
-    rollupOptions: { // ADD OR UPDATE THIS BLOCK
+    rollupOptions: {
       input: {
         main: resolve(__dirname, 'src/index.html'),
-        chords: resolve(__dirname, 'src/chords/index.html'), // ADD THIS LINE
+        chords: resolve(__dirname, 'src/chords/index.html'),
       },
     },
   },
@@ -26,6 +25,15 @@ export default defineConfig({
     }
   ],
   server: {
-    // Ensure your proxy is removed from here if it was for scales-chords-api
+    proxy: {
+
+      '/api/genius': {
+        target: 'https://api.genius.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/genius/, ''),
+        secure: true,
+      },
+
+    },
   },
 });
