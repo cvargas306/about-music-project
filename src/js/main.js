@@ -1,4 +1,3 @@
-
 import { loadPartial } from './utils.mjs';
 import { getArtistInfo } from './lastfm.js';
 import { getLyrics } from './lyrics.js';
@@ -8,7 +7,7 @@ const RECENT_SEARCHES_KEY = 'recentSearches';
 
 console.log('main.js loaded!');
 
-// Get DOM elements
+
 const artistInput = document.getElementById('artistInput');
 const songInput = document.getElementById('songInput');
 const searchButton = document.getElementById('searchButton');
@@ -22,23 +21,23 @@ console.log('VITE_LASTFM_API_KEY from .env:', import.meta.env.VITE_LASTFM_API_KE
 function saveSearch(artist, song) {
     let searches = JSON.parse(localStorage.getItem(RECENT_SEARCHES_KEY)) || [];
 
-    // Create a unique identifier for the search
-    const newSearch = { artist: artist, song: song };
-    const searchString = `${artist}-${song}`; // Simple string for comparison
 
-    // Remove duplicates (if the exact search already exists, move it to top)
+    const newSearch = { artist: artist, song: song };
+    const searchString = `${artist}-${song}`;
+
+
     searches = searches.filter(s => `${s.artist}-${s.song}` !== searchString);
 
-    // Add new search to the beginning
+
     searches.unshift(newSearch);
 
-    // Trim to max number of searches
+
     if (searches.length > MAX_RECENT_SEARCHES) {
         searches = searches.slice(0, MAX_RECENT_SEARCHES);
     }
 
     localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(searches));
-    renderRecentSearches(); // Re-render after saving
+    renderRecentSearches();
 }
 
 function renderRecentSearches() {
@@ -58,11 +57,11 @@ function renderRecentSearches() {
                 e.preventDefault();
                 artistInput.value = search.artist;
                 songInput.value = search.song;
-                searchButton.click(); // Programmatically click the search button
+                searchButton.click();
             });
             ul.appendChild(li);
         });
-        recentSearchesDisplay.innerHTML = ''; // Clear previous
+        recentSearchesDisplay.innerHTML = '';
         recentSearchesDisplay.appendChild(ul);
     }
 }
@@ -72,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderRecentSearches();
 });
 
-// --- Event Listener for Main Artist/Song Search ---
+
 searchButton.addEventListener('click', async () => {
     const artistQuery = artistInput.value.trim();
     const songQuery = songInput.value.trim();
@@ -82,30 +81,30 @@ searchButton.addEventListener('click', async () => {
     artistInfoDisplay.innerHTML = '<p>Enter an artist name to display artist information here.</p>';
     searchMessage.innerHTML = '';
 
-    // Input Validation
+
     if (!artistQuery && !songQuery) {
         searchMessage.innerHTML = '<p class="error-message">Please enter an Artist Name and/or a Song Title to search.</p>';
         return;
     }
 
-    searchMessage.innerHTML = '<p>Searching...</p>'; // Show general loading message
+    searchMessage.innerHTML = '<p>Searching...</p>';
     console.log(`Searching for Artist: "${artistQuery}", Song: "${songQuery}"`);
 
     let lyricsFetched = false;
     let artistInfoFetched = false;
 
-    // --- Fetch Lyrics (using Lyrics.ovh API) ---
+
     if (artistQuery && songQuery) {
         try {
-            // CORRECTED: Use songQuery and artistQuery here
+
             lyricsDisplay.innerHTML = `<p>Searching lyrics for "${songQuery}" by "${artistQuery}"...</p>`;
             const lyricsText = await getLyrics(artistQuery, songQuery);
             if (lyricsText) {
-                // CORRECTED: Use songQuery and artistQuery here
+
                 lyricsDisplay.innerHTML = `<h4>Lyrics for "${songQuery}" by ${artistQuery}:</h4><pre>${lyricsText}</pre>`; // Ensure formatting with <pre>
                 lyricsFetched = true;
             } else {
-                // CORRECTED: Use songQuery and artistQuery here
+
                 lyricsDisplay.innerHTML = `<p class="error-message">Lyrics for "${songQuery}" by ${artistQuery} not found.</p>`;
             }
         } catch (error) {
@@ -120,13 +119,13 @@ searchButton.addEventListener('click', async () => {
         lyricsDisplay.innerHTML = `<p>Enter both an artist name and song title to get lyrics here.</p>`;
     }
 
-    // --- Fetch Artist Information (using Last.fm API) ---
+
     if (artistQuery) {
         try {
             artistInfoDisplay.innerHTML = `<p>Searching artist info for "${artistQuery}"...</p>`;
             const artistData = await getArtistInfo(artistQuery);
-            if (artistData && artistData.name) { // Check if artistData and its name property exist
-                const bioText = artistData.bio || 'No biography available.'; // Provide a default if bio is empty
+            if (artistData && artistData.name) {
+                const bioText = artistData.bio || 'No biography available.';
                 artistInfoDisplay.innerHTML = `<h3>Artist: ${artistData.name}</h3><p>${bioText}</p>`;
                 artistInfoFetched = true;
             } else {
@@ -140,8 +139,7 @@ searchButton.addEventListener('click', async () => {
         artistInfoDisplay.innerHTML = `<p>Enter an artist name to display artist information here.</p>`;
     }
 
-    // Final Search Message 
-    // This provides a summary message after both fetches (or attempts) are done.
+
     if (lyricsFetched || artistInfoFetched) {
         searchMessage.innerHTML = `<p>Search results for "${artistQuery}${songQuery ? ' - ' + songQuery : ''}".</p>`;
     } else {

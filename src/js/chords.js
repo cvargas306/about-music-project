@@ -1,13 +1,12 @@
-// src/js/chords.js
-import { loadPartial } from './utils.mjs'; // Only load what's needed, fetchData is not used for direct API calls here
+import { loadPartial } from './utils.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Load the footer. Correct path using absolute from public root
+
     loadPartial('#main-footer', '/partials/footer.html');
 
     const chordInput = document.getElementById('chordInput');
     const lookupButton = document.getElementById('lookupButton');
-    const chordResults = document.getElementById('chordResults'); // Changed from chordScaleResults
+    const chordResults = document.getElementById('chordResults');
 
     lookupButton.addEventListener('click', () => {
         const query = chordInput.value.trim();
