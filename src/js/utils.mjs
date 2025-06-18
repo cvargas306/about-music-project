@@ -3,14 +3,26 @@ export async function fetchData(url, options = {}) {
     try {
         const response = await fetch(url, options);
         if (!response.ok) {
-
-            const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || response.statusText}`);
+            const errorText = await response.text(); // Get raw text
+            let errorMessage = `HTTP error! Status: ${response.status} ${response.statusText}`;
+            try {
+                const errorJson = JSON.parse(errorText); // Try parsing as JSON
+                if (errorJson.message) {
+                    errorMessage += `, Message: ${errorJson.message}`;
+                }
+            } catch (e) {
+                // If it's not JSON, or no message, use the default HTTP error message
+            }
+            throw new Error(errorMessage);
         }
         return await response.json();
     } catch (error) {
-        console.error('Error fetching data:', error);
-        throw error;
+        console.error('Error in fetchData:', error);
+        // **ADD THIS BLOCK** for more specific network error message
+        if (error instanceof TypeError && error.message === 'Failed to fetch') {
+            throw new Error('Network error or server unreachable. Please check your connection or try again later, or the API might be down.');
+        }
+        throw error; // Re-throw to propagate the error
     }
 }
 
