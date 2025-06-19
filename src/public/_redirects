@@ -1,0 +1,3 @@
+/api/genius/* https://api.genius.com/:splat  200
+
+/api/lastfm/* https://ws.audioscrobbler.com/2.0/:splat  200

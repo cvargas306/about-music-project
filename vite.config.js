@@ -35,5 +35,12 @@ export default defineConfig({
       },
 
     },
+
+    '/api/lastfm': {
+      target: 'https://ws.audioscrobbler.com', // The actual Last.fm API domain
+      changeOrigin: true,
+      rewrite: (path) => path.replace(/^\/api\/lastfm/, ''), // Removes /api/lastfm prefix
+      secure: true, // Set to true because Last.fm supports HTTPS
+    },
   },
 });
