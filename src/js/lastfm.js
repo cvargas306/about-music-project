@@ -2,7 +2,7 @@ import { fetchData } from './utils.mjs';
 
 const LASTFM_API_KEY = import.meta.env.VITE_LASTFM_API_KEY;
 
-const LASTFM_BASE_URL = 'http://ws.audioscrobbler.com/2.0/';
+const LASTFM_BASE_URL = 'https://ws.audioscrobbler.com/2.0/';
 
 export async function getArtistInfo(artistName) {
     if (!LASTFM_API_KEY) {
